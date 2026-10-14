@@ -57,6 +57,7 @@ All outputs (tables as CSV/JSON, figures as PNG) are written to `outputs/`.
 | 14 | `src/revision/14_pr_verification.py` | `14_pr_verification.json` | II-G, III-S, Fig. 7 |
 | 15 | `src/revision/15_tables_and_reduction.py` | `15_tables_reduction.json` | III-C, III-E, III-H, III-K, III-M, Tables I, III, VI |
 | 16 | `src/revision/16_figures.py` | `outputs/figures/` | Figs. 1-7 |
+| 17 | `src/revision/17_final_model.py` | `final_model.json` (all parameters of the final model) | Table VI note, TRIPOD+AI item 22 |
 
 Stage 6 runs after stage 7 because the negative control uses the seed-42 matched cohort.
 
