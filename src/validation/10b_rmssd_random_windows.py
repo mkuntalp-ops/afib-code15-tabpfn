@@ -125,6 +125,21 @@ if __name__ == "__main__":
             "seg1_CV_within_window_median": float(np.median(
                 sub.groupby(["rec", "w0"]).seg1.apply(lambda v: v.std() / v.mean() if v.mean() > 0 else np.nan).dropna())),
         })
+        # recording-level (cluster) bootstrap CI: resample recordings, recompute the median over
+        # the first 20 draws of the single-segment ICC(2,1) and of the test-retest ICC(2,1)
+        rng = np.random.default_rng(11)
+        recs = sub.rec.unique(); by_rec = {r: sub[sub.rec == r] for r in recs}
+        b_ref, b_tr = [], []
+        for _ in range(500):
+            bs = pd.concat([by_rec[r] for r in rng.choice(recs, len(recs), replace=True)], ignore_index=True)
+            v1, v2 = [], []
+            for kk in range(20):
+                s_ = bs[bs.draw == kk].dropna(subset=["seg1", "seg2"])
+                if len(s_) >= 10:
+                    v1.append(icc21(s_.gold.values, s_.seg1.values)); v2.append(icc21(s_.seg1.values, s_.seg2.values))
+            b_ref.append(np.median(v1)); b_tr.append(np.median(v2))
+        res["ICC21_single_vs_ref_clusterCI"] = [float(np.percentile(b_ref, 2.5)), float(np.percentile(b_ref, 97.5))]
+        res["test_retest_ICC21_clusterCI"] = [float(np.percentile(b_tr, 2.5)), float(np.percentile(b_tr, 97.5))]
         return res
 
     out = {"All": summarise(df), "PAF": summarise(df[df.group == "PAF"]),

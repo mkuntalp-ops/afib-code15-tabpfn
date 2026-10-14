@@ -59,6 +59,11 @@ def main():
         for f in ["Pdur_med", "Pdisp", "PR_med", "PTFV1_proxy"]:
             a = sdf[sdf.split == "vaka"][f].dropna(); b = sdf[sdf.split == "kontrol"][f].dropna()
             art[f"{sname}_{f}_p"] = float(mannwhitneyu(a, b).pvalue)
+    for sname, sdf in [("low", m[m.Pamp_V1 <= med]), ("high", m[m.Pamp_V1 > med])]:
+        for f in ["Pdisp", "Pdur_med"]:
+            a = sdf[sdf.split == "vaka"][f].dropna().values; b = sdf[sdf.split == "kontrol"][f].dropna().values
+            bs = [hl(rng.choice(a, len(a)), rng.choice(b, len(b))) for _ in range(500)]
+            art[f"{sname}_{f}_HL"] = {"HL": hl(a, b), "CI": [float(np.percentile(bs, 2.5)), float(np.percentile(bs, 97.5))]}
     res["artefact"] = art
     q = pool.dropna(subset=["PTFV1_proxy", "Pamp_V1"])
     res["spearman_proxy_amplitude"] = float(spearmanr(q.PTFV1_proxy, q.Pamp_V1)[0])
