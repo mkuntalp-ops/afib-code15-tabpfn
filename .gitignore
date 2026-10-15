@@ -1,4 +1,4 @@
-data/
+/data/
 *.npz
 *.hdf5
 venv/
@@ -7,3 +7,4 @@ __pycache__/
 .DS_Store
 *.csv
 !config/*.txt
+/outputs/

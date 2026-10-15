@@ -6,8 +6,15 @@ h5py 3.16.0
 wfdb 4.3.1
 neurokit2 0.2.13
 scikit-learn 1.9.0
-tabpfn 8.1.0 (loads TabPFN-3 checkpoint: tabpfn-v3-classifier-v3_default.ckpt)
+statsmodels 0.14.6
+matplotlib 3.11.1
 
-Hardware: Apple M4, 16 GB unified memory, CPU only (no GPU used or required).
-Total compute for the primary analysis, including 10x5 repeated cross-validation
-across all model classes, was under two minutes.
+TabPFN (stage 8)
+  original submission : tabpfn 8.1.0
+  revision            : tabpfn 9.0.0, Python 3.12, scikit-learn 1.9.1, PyTorch 2.14.0, run on CPU
+  checkpoint          : tabpfn-v3-classifier-v3_default.ckpt (passed explicitly via TABPFN_CHECKPOINT)
+  checkpoint SHA256 used in the revision:
+    d0d865d54dfbc524f5703104be90620182dca7e5fb2c16de72e9959ea18f3988
+  (no hash was recorded for the original submission)
+
+Hardware: Apple M4, 16 GB unified memory, CPU only.
