@@ -57,32 +57,26 @@ N_UM_CASE, N_UM_CTRL = int((_um.split == "vaka").sum()), int((_um.split == "kont
 _t = json.load(open(OUT / "12_temporal_followup.json"))
 N_GE2Y = int((m42[m42.split == "vaka"].age_at_first_af - m42[m42.split == "vaka"].age_at_index >= 2).sum())
 N_ECG2 = int(_t["controls_ge2_ecgs"]["pairs"])
-fig, ax = plt.subplots(figsize=(7.16, 6.2))
-ax.set_xlim(0, 1); ax.set_ylim(0.10, 1); ax.axis("off")
-L, R_ = 0.25, 0.75
-def seg(x0, y0, x1, y1):
-    ax.plot([x0, x1], [y0, y1], color="#333333", lw=0.6)
-box(ax, 0.50, 0.955, 0.52, 0.05, "CODE-15%: 233,770 patients, 345,779 ECGs")
-arrow(ax, 0.40, 0.93, L, 0.895); arrow(ax, 0.60, 0.93, R_, 0.895)
-box(ax, L, 0.86, 0.46, 0.07, f"Patients with ≥1 AF-labelled ECG: {N_AF:,}\n{N_AF - N_CLEAR - N_SAME:,} without a pre-AF sinus ECG excluded", fc="#f4f4f4")
-box(ax, R_, 0.86, 0.46, 0.07, f"Controls: no AF label, ≥1 sinus ECG: {N_CTRL_POOL:,}")
-arrow(ax, L, 0.825, L, 0.775); arrow(ax, R_, 0.825, R_, 0.775)
-box(ax, L, 0.74, 0.46, 0.065, f"Sinus ECG before first AF ECG: {N_CLEAR + N_SAME:,}\n{N_CLEAR} with clear age ordering; {N_SAME} same recorded age")
-box(ax, R_, 0.74, 0.46, 0.065, f"Random sample, 4 controls per case (seed 42): {N_CS:,}")
-arrow(ax, R_, 0.707, 0.755, 0.645)
-box(ax, 0.755, 0.605, 0.42, 0.085, f"Index = earliest sinus ECG\nwaveform available: {N_CW:,}; after QC: {N_CQC:,}\n≥6 R peaks: {N_CP:,}")
-arrow(ax, 0.22, 0.707, 0.12, 0.645); arrow(ax, 0.28, 0.707, 0.39, 0.645)
-box(ax, 0.12, 0.61, 0.20, 0.065, f"Same recorded age:\n{N_SAME} (excluded from\nprimary analysis)", fc="#f4f4f4")
-box(ax, 0.39, 0.61, 0.27, 0.085, f"Clear ordering: {N_CLEAR}\nwaveform available: {N_WAVE}\nafter QC: {N_QC}")
-arrow(ax, 0.39, 0.567, 0.39, 0.49)
-box(ax, 0.39, 0.465, 0.40, 0.05, f"Cases with ≥6 R peaks: {N_CASE}\n(index = latest sinus ECG before AF)")
-arrow(ax, 0.39, 0.44, 0.45, 0.385); arrow(ax, 0.755, 0.562, 0.68, 0.385)
-box(ax, 0.55, 0.36, 0.46, 0.05, f"Analysis pool: {N_CASE} cases, {N_CP:,} controls", fc="#f4f4f4")
-arrow(ax, 0.45, 0.335, 0.30, 0.285); arrow(ax, 0.65, 0.335, 0.76, 0.285)
-box(ax, 0.28, 0.255, 0.46, 0.06, f"Matched cohort, 1:1 (sex, ±2 y; ±3 y fallback):\n{N_PAIRS} cases and {N_PAIRS} controls (seed 42; 11 seeds analysed)", fc="#e8f1fb")
-box(ax, 0.77, 0.255, 0.40, 0.06, f"Unmatched analysis (complete feature data):\n{N_UM_CASE} cases, {N_UM_CTRL:,} controls (age, sex covariates)")
-arrow(ax, 0.28, 0.225, 0.28, 0.185)
-box(ax, 0.28, 0.155, 0.46, 0.06, f"Sensitivity analyses: interval ≥2 y ({N_GE2Y} cases);\ncontrols with ≥2 ECGs ({N_ECG2} pairs)")
+fig, ax = plt.subplots(figsize=(7.16, 3.9))
+ax.set_xlim(0, 1); ax.set_ylim(0.01, 1); ax.axis("off")
+L, R_, FS = 0.25, 0.75, 7.2
+box(ax, 0.50, 0.955, 0.50, 0.075, "CODE-15%: 233,770 patients, 345,779 ECGs", fs=FS)
+arrow(ax, 0.40, 0.917, L, 0.868); arrow(ax, 0.60, 0.917, R_, 0.868)
+box(ax, L, 0.815, 0.47, 0.105, f"Patients with ≥1 AF-labelled ECG: {N_AF:,}\n{N_AF - N_CLEAR - N_SAME:,} without a pre-AF sinus ECG excluded", fc="#f4f4f4", fs=FS)
+box(ax, R_, 0.815, 0.47, 0.105, f"Controls: no AF label, ≥1 sinus ECG: {N_CTRL_POOL:,}", fs=FS)
+arrow(ax, L, 0.762, L, 0.722); arrow(ax, R_, 0.762, R_, 0.722)
+box(ax, L, 0.67, 0.47, 0.105, f"Sinus ECG before first AF ECG: {N_CLEAR + N_SAME:,}\n{N_SAME} with same recorded age excluded", fc="#f4f4f4", fs=FS)
+box(ax, R_, 0.67, 0.47, 0.105, f"Random 1:4 sample (seed 42): {N_CS:,}\nindex = earliest sinus ECG", fs=FS)
+arrow(ax, L, 0.617, L, 0.577); arrow(ax, R_, 0.617, R_, 0.577)
+box(ax, L, 0.51, 0.47, 0.135, f"Clear age ordering: {N_CLEAR}; index = latest pre-AF ECG\nwaveform available: {N_WAVE}\nafter QC: {N_QC}; ≥6 R peaks: {N_CASE}", fs=FS)
+box(ax, R_, 0.51, 0.47, 0.135, f"Sampled controls: {N_CS:,}\nwaveform available: {N_CW:,}\nafter QC: {N_CQC:,}; ≥6 R peaks: {N_CP:,}", fs=FS)
+arrow(ax, L, 0.442, 0.42, 0.392); arrow(ax, R_, 0.442, 0.58, 0.392)
+box(ax, 0.50, 0.355, 0.50, 0.075, f"Analysis pool: {N_CASE} cases, {N_CP:,} controls", fc="#f4f4f4", fs=FS)
+arrow(ax, 0.40, 0.317, L, 0.268); arrow(ax, 0.60, 0.317, R_, 0.268)
+box(ax, L, 0.215, 0.47, 0.105, f"Matched 1:1 on sex and age (±2 y; ±3 y fallback):\n{N_PAIRS} cases, {N_PAIRS} controls (seed 42; 11 seeds)", fc="#e8f1fb", fs=FS)
+box(ax, R_, 0.215, 0.47, 0.105, f"Unmatched analysis, complete feature data:\n{N_UM_CASE} cases, {N_UM_CTRL:,} controls (age, sex adjusted)", fs=FS)
+arrow(ax, L, 0.162, L, 0.122)
+box(ax, L, 0.07, 0.47, 0.105, f"Sensitivity analyses: interval ≥2 y ({N_GE2Y} cases);\ncontrols with ≥2 ECGs, re-matched ({N_ECG2} pairs)", fs=FS)
 fig.savefig(f"{FIG}/Fig1_cohort_flow.png", dpi=DPI, bbox_inches="tight"); plt.close(fig)
 
 # ---------------- Figure 2: recorded interval, integer years ----------------
@@ -91,7 +85,7 @@ cnt = d.value_counts().sort_index()
 fig, ax = plt.subplots(figsize=(3.5, 2.3))
 ax.bar(cnt.index, cnt.values, width=0.8, color="#4a7ab5", edgecolor="#2d4f7a", linewidth=0.4)
 ax.set_xticks(range(1, int(cnt.index.max()) + 1))
-ax.set_xlabel("Recorded age difference, index to first AF-labelled ECG (years)")
+ax.set_xlabel("Recorded age difference to first AF-labelled ECG (years)")
 ax.set_ylabel("Cases (n)")
 ax.text(0.97, 0.95, f"n = {int(cnt.sum())} cases\nmedian = {d.median():.0f} y\n≥2 y: {int((d>=2).sum())} ({(d>=2).mean()*100:.0f}%)",
         transform=ax.transAxes, ha="right", va="top", fontsize=6.5)
@@ -101,14 +95,14 @@ fig.tight_layout(); fig.savefig(f"{FIG}/Fig2_interval.png", dpi=DPI); plt.close(
 
 # ---------------- seed-42 out-of-fold predictions ----------------
 pred = {}
-for name, feats in [("Age and sex", ["age_at_index", "is_male"]), ("Variability (RR block)", RRB),
-                    ("Atrial block (PR, V1 amplitude)", ATR), ("Three-feature model", FINAL3)]:
+for name, feats in [("Age + sex", ["age_at_index", "is_male"]), ("Variability", RRB),
+                    ("Atrial (PR, V1 amplitude)", ATR), ("Three-feature model", FINAL3)]:
     y, p = oof_pred(m42, feats)
     pred[name] = (y, p)
 
 # ---------------- Figure 3: ROC ----------------
 fig, ax = plt.subplots(figsize=(3.5, 3.1))
-styles = ["-", "--", ":", "-"]
+styles = ["-.", "--", ":", "-"]
 for (name, (y, p)), ls in zip(pred.items(), styles):
     fpr, tpr, _ = roc_curve(y, p)
     ax.plot(fpr, tpr, ls=ls, lw=1.0 if name != "Three-feature model" else 1.4, color="#1f3b63" if name == "Three-feature model" else None,
@@ -116,15 +110,18 @@ for (name, (y, p)), ls in zip(pred.items(), styles):
 ax.plot([0, 1], [0, 1], color="#999999", lw=0.5, ls="-")
 ax.set_xlabel("False positive rate (1 − specificity)"); ax.set_ylabel("True positive rate (sensitivity)")
 ax.set_xlim(0, 1); ax.set_ylim(0, 1)
-ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.17), ncol=1, frameon=False)
-fig.set_size_inches(3.5, 3.9)
+ax.set_aspect("equal")
+leg = ax.legend(loc="lower right", frameon=True, fontsize=6.3, handlelength=2.6, framealpha=0.95, edgecolor="#bbbbbb")
+leg.get_frame().set_linewidth(0.4)
+fig.set_size_inches(3.5, 3.1)
 fig.tight_layout(); fig.savefig(f"{FIG}/Fig3_ROC.png", dpi=DPI); plt.close(fig)
 
 # ---------------- Figure 4: calibration ----------------
 y, p = pred["Three-feature model"]
 qs = pd.qcut(p, 8, labels=False, duplicates="drop")
 obs = pd.Series(y).groupby(qs).mean(); mp = pd.Series(p).groupby(qs).mean()
-fig, ax = plt.subplots(figsize=(3.5, 3.0))
+fig, ax = plt.subplots(figsize=(3.5, 3.1))
+ax.set_aspect("equal")
 ax.plot([0, 1], [0, 1], color="#999999", lw=0.6)
 ax.plot(mp.values, obs.values, "o-", ms=3.5, lw=1.0, color="#1f3b63")
 ax.set_xlabel("Mean predicted probability of being a case (8 bins)")
@@ -137,8 +134,8 @@ fig.tight_layout(); fig.savefig(f"{FIG}/Fig4_calibration.png", dpi=DPI); plt.clo
 med_amp = m42.Pamp_V1.median()
 strata = {"Low V1 P amplitude": m42[m42.Pamp_V1 <= med_amp], "High V1 P amplitude": m42[m42.Pamp_V1 > med_amp]}
 feats5 = [("Pdur_med", "P duration (ms)"), ("Pdisp", "P dispersion (ms)"), ("PR_med", "PR interval (ms)"),
-          ("PTFV1_proxy", "Pre-offset V1 integral (ms·mV)")]
-fig, axes = plt.subplots(2, 4, figsize=(7.16, 3.8))
+          ("PTFV1_proxy", "V1 integral (mV·ms)")]
+fig, axes = plt.subplots(2, 4, figsize=(7.16, 3.85))
 pvals = {}
 for r, (sname, sdf) in enumerate(strata.items()):
     for c, (f, lab) in enumerate(feats5):
@@ -147,11 +144,12 @@ for r, (sname, sdf) in enumerate(strata.items()):
         pv = mannwhitneyu(a, b).pvalue if len(a) > 5 and len(b) > 5 else np.nan
         pvals[f"{sname}|{f}"] = float(pv)
         ax.boxplot([b, a], widths=0.5, showfliers=False, medianprops=dict(color="#1f3b63", lw=1))
-        ax.set_xticks([1, 2]); ax.set_xticklabels(["Ctrl", "Case"])
-        ax.set_title(f"{lab}" if r == 0 else "", fontsize=6.8)
-        ax.text(0.5, 0.97, f"p={pv:.2g}" if pv >= 0.001 else f"p<0.001", transform=ax.transAxes, ha="center", va="top", fontsize=6)
+        lo_, hi_ = ax.get_ylim(); ax.set_ylim(lo_, hi_ + 0.14 * (hi_ - lo_))
+        ax.set_xticks([1, 2]); ax.set_xticklabels([f"Ctrl\nn={len(b)}", f"Case\nn={len(a)}"])
+        ax.set_title(lab, fontsize=7.5)
+        ax.text(0.5, 0.97, f"p={pv:.2g}" if pv >= 0.001 else f"p<0.001", transform=ax.transAxes, ha="center", va="top", fontsize=7.5)
         if c == 0:
-            ax.set_ylabel(sname + "\n(n per group ≈ %d)" % (len(sdf) // 2))
+            ax.set_ylabel(("V1 P amplitude ≤ " if r == 0 else "V1 P amplitude > ") + f"{med_amp:.3f} mV", fontsize=7.5)
 fig.tight_layout(); fig.savefig(f"{FIG}/Fig5_artefact.png", dpi=DPI); plt.close(fig)
 
 # ---------------- Figure 7: PR verification ----------------
@@ -184,10 +182,10 @@ for p_ in rp:
 mark(wd, "ECG_P_Onsets", "#d1495b", "P onset", "^")
 mark(wd, "ECG_P_Peaks", "#7a1f2b", "P peak", "v")
 mark(wd, "ECG_P_Offsets", "#d1495b", "P offset", ">")
-mark(wd, "ECG_R_Onsets", "#333333", "R onset", "s")
+mark(wd, "ECG_R_Onsets", "#333333", "QRS onset", "s")
 ax.plot([], [], color="#f2c6cc", lw=6, label="PR interval")
 ax.legend(fontsize=5.8, ncol=5, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.2))
-ax.set_xlabel("Time (s)"); ax.set_ylabel("Lead II (mV, band-passed)")
+ax.set_xlabel("Time (s)"); ax.set_ylabel("Lead II (mV, band-pass filtered)")
 ax.legend(fontsize=5.6, ncol=2, frameon=False, loc="upper right")
 ax.set_title("a) Example case record, lead II: DWT fiducial points used in the study", fontsize=7)
 ax2 = fig.add_subplot(gs[0, 1])
@@ -220,12 +218,12 @@ for ax, (f, lab) in zip(axes, feats6):
     ax.axvline(2.8, color="#999999", lw=0.6, ls="--")
     lo_, hi_ = ax.get_ylim(); ax.set_ylim(lo_, hi_ + 0.12 * (hi_ - lo_))
     ax.set_xticks([1, 2, 3.6, 4.6]); ax.set_xticklabels(["Ctrl", "Case", "Ctrl", "Case"])
-    ax.set_title(lab, fontsize=7)
+    ax.set_title(lab, fontsize=7.5)
     for x0, (a, b) in [(1.5, (data[0], data[1])), (4.1, (data[2], data[3]))]:
         pv = mannwhitneyu(a, b).pvalue
         ax.text(x0, 0.98, "p<0.001" if pv < 0.001 else f"p={pv:.2g}", transform=ax.get_xaxis_transform(),
-                ha="center", va="top", fontsize=6)
-    ax.text(1.5, -0.2, "CODE-15%", transform=ax.get_xaxis_transform(), ha="center", fontsize=6.5)
-    ax.text(4.1, -0.2, "PTB-XL", transform=ax.get_xaxis_transform(), ha="center", fontsize=6.5)
+                ha="center", va="top", fontsize=7.5)
+    ax.text(1.5, -0.2, "CODE-15%", transform=ax.get_xaxis_transform(), ha="center", fontsize=7.5)
+    ax.text(4.1, -0.2, "PTB-XL", transform=ax.get_xaxis_transform(), ha="center", fontsize=7.5)
 fig.tight_layout(); fig.savefig(f"{FIG}/Fig6_replication.png", dpi=DPI); plt.close(fig)
 print("Fig6 written")
