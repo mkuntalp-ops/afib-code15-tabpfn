@@ -1,0 +1,33 @@
+{
+  "version": "1",
+  "source": "afib-code15-tabpfn/src/models/08_model_comparison.py, src/common.py, src/revision/15_tables_and_reduction.py (commit 89bb70e)",
+  "cross_validation": {"splitter": "sklearn.model_selection.StratifiedGroupKFold", "n_splits": 5, "shuffle": true,
+                       "random_state": "repetition index t = 0..n-1", "groups": "patient_id (one index ECG per patient)",
+                       "repetitions": {"logistic, SVM, kNN, random forest": 10, "gradient boosting, MLP (tuned)": 3, "TabPFN": 5},
+                       "oof_combination": "per-record mean of out-of-fold probabilities over the model's repetitions; AUROC on the mean"},
+  "preprocessing": {"imputation": "sklearn SimpleImputer() default (mean), fitted in training folds",
+                    "scaling": "StandardScaler fitted in training folds (not applied for TabPFN)",
+                    "final_released_model": "SimpleImputer(strategy='median') + StandardScaler + LogisticRegression, fitted once on the seed-42 matched cohort (src/revision/17_final_model.py)"},
+  "models": {
+    "logistic_regression": {"class": "LogisticRegression", "params": {"max_iter": 2000}},
+    "svm_rbf": {"class": "SVC", "params": {"probability": true, "random_state": 42}},
+    "knn": {"class": "KNeighborsClassifier", "params": {"n_neighbors": 50}},
+    "random_forest": {"class": "RandomForestClassifier", "params": {"n_estimators": 400, "random_state": 42}},
+    "gradient_boosting": {"class": "HistGradientBoostingClassifier", "params": {"random_state": 42},
+                          "grid": {"max_leaf_nodes": [4, 8, 15], "learning_rate": [0.03, 0.1], "min_samples_leaf": [20, 50]},
+                          "search": "GridSearchCV(scoring='roc_auc', cv=3) inside each outer training fold"},
+    "mlp": {"class": "MLPClassifier", "params": {"max_iter": 2000, "random_state": 42},
+            "grid": {"hidden_layer_sizes": [[16], [32], [64, 32]], "alpha": [0.1, 1.0, 10.0]},
+            "search": "GridSearchCV(scoring='roc_auc', cv=3) inside each outer training fold"},
+    "tabpfn": {"class": "tabpfn.TabPFNClassifier", "package": "tabpfn 9.0.0 (Apache-2.0)",
+               "params": {"model_path": "tabpfn-v3-classifier-v3_default.ckpt", "device": "cpu", "random_state": 0},
+               "weights_licence": "TABPFN-3 License v1.0 (non-commercial)", "checkpoint_sha256": "d0d865d54dfbc524f5703104be90620182dca7e5fb2c16de72e9959ea18f3988"}
+  },
+  "stage2_nested": {"estimator": "SimpleImputer + StandardScaler + LogisticRegression(max_iter=2000)",
+                    "importance": "sklearn.inspection.permutation_importance(scoring='roc_auc', n_repeats=10, random_state=0) on the training fold itself",
+                    "rule": "keep features with mean importance > 0.005 (all if none)", "repetitions_per_seed": 3, "seeds": 11},
+  "stage2_original_outside_cv": "UNRESOLVED - code not preserved; estimator, repeats and evaluation split cannot be reported",
+  "bootstrap": {"resamples": 2000, "unit": "individual record (matched pairs not kept together)", "pairing": "same resampled indices for the compared models", "seed": 42},
+  "matching": {"rule": "cases from oldest to youngest; random unused control, same sex, |age difference| <= 2 y; fallback <= 3 y without the sex constraint",
+               "fallback_used": "0 pairs in all 11 seeds (audit/a2_a7_audit.json)"}
+}
