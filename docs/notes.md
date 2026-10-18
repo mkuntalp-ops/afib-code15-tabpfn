@@ -49,3 +49,11 @@ properties of the acquisition rather than the patient).
 text, not in the order they were written. This was wrong in an earlier
 draft (twice) and caught by external review; if you add or remove a table,
 re-check the citation order.
+
+**Revision (JBHI major revision).** The full pipeline was re-run from the raw
+waveforms. Findings that changed the code or the text: the stored PR table of the
+original submission did not match the per-lead aggregation implemented here (the
+re-extracted values are used); the original feature-distribution table came from
+matching seed 0, not seed 42; controls are a random 1:4 sample (now implemented in
+stage 1); the quality rule is >= 6 R peaks; exams_part0 was not extracted in the
+original analysis (reproduced via SKIP_PARTS). See README "Design decisions".

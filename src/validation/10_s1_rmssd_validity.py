@@ -102,7 +102,7 @@ def cluster_bootstrap_ci(sub, n_boot=2000, seed=0):
 
 def main():
     df = extract_windows()
-    df.to_csv("s1_rmssd.csv", index=False)
+    df.to_csv("outputs/10_s1_rmssd.csv", index=False)
 
     for label, sub in [("All", df), ("PAF", df[df.group == "PAF"]),
                         ("Control", df[df.group == "kontrol"])]:

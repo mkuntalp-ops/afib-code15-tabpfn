@@ -1,136 +1,72 @@
 """
-Stage 7 - Age/sex matching, averaged over 11 independent realisations
-(Methods 2.2, 2.9; Results 3.3-3.7).
+Stage 7 - Age/sex matching averaged over 11 realisations and the primary results
+(Methods II-B, II-J, II-K; Results III-D, III-I, III-L).
 
-Matching: each case is paired without replacement to one control of the
-same sex and within two years of age (widened to three years if no
-candidate is available). Seed 42 is the realisation fixed before any
-results were seen when the cohort was first constructed and is retained
-for single-realisation tables/figures; seeds 0-9 are the ten additional
-realisations used to quantify matching-seed variability (Discussion §4).
+For each seed in config/seeds.txt: 1:1 matching (common.match_once), then out-of-fold
+AUROC for age+sex, the variability block, the atrial block, the final three-feature model
+and the five-feature model, and the atrial increment (final - variability). Also reports
+the operating points, Brier score and calibration of the final model, the atrial increment
+by recorded interval (Table V) and the seed-42 cohort used by single-realisation displays.
 
-This script reports, for each of 11 seeds:
-  - Age+sex baseline AUROC (should be ~0.50 by construction)
-  - RR-block-only AUROC
-  - Atrial-block-only AUROC (PR interval + P-wave amplitude in V1)
-  - Combined 3-feature AUROC (RMSSD, PR_med, Pamp_V1) -- the final model
-  - H2: incremental contribution of the atrial block over RR alone
-
-The manuscript's seed-averaged headline figures (Results 3.3) are the mean
-across these 11 runs; seed 42 alone is what is shown in Table 2, Table 5
-and Figures 3, 4, 6.
-
-Input : rr_features.csv, pwave_features.csv, ptfv1_true.csv,
-        cohort_raw.csv, exams.csv (for is_male)
-Output: cohort_clean.csv (seed-42 matched cohort, used by downstream
-        scripts), printed per-seed and averaged AUROC table
+Input : outputs/cohort_clean.csv, rr_features.csv, pwave_features.csv, ptfv1_true.csv
+Output: outputs/matched_seed42.csv, outputs/07_seed_results.csv, outputs/07_primary.json
 """
+import sys
+sys.path.insert(0, "src")
 import numpy as np
 import pandas as pd
-import warnings
-from sklearn.model_selection import StratifiedGroupKFold
-from sklearn.linear_model import LogisticRegression
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.impute import SimpleImputer
-from sklearn.metrics import roc_auc_score
-
-warnings.filterwarnings("ignore")
-
-RR = ["meanRR", "RMSSD"]
-ATRIAL = ["PR_med", "Pamp_V1"]
-FINAL3 = ["RMSSD", "PR_med", "Pamp_V1"]
-SEEDS = [42, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-
-def build_dataset():
-    r = pd.read_csv("rr_features.csv")
-    p = pd.read_csv("pwave_features.csv")
-    t = pd.read_csv("ptfv1_true.csv")
-    c = pd.read_csv("cohort_raw.csv")
-    e = pd.read_csv("data/exams.csv")[["exam_id", "is_male"]]
-
-    d = (
-        r.merge(p, on="exam_id")
-        .merge(t, on="exam_id", how="left")
-        .merge(c, on="exam_id")
-        .merge(e, on="exam_id")
-    )
-    d = d[d["split"].isin(["vaka", "kontrol"])]
-    d = d[d.n_R >= 6].reset_index(drop=True)
-    d["Pamp_V1"] = d.get("Pamp_6")
-    return d
-
-
-def match_once(d, seed):
-    cases = d[d["split"] == "vaka"]
-    controls = d[d["split"] == "kontrol"]
-    rng = np.random.default_rng(seed)
-    used, pairs = set(), []
-    for _, case in cases.sort_values("age_at_index", ascending=False).iterrows():
-        pool = controls[
-            (~controls.exam_id.isin(used))
-            & (controls.is_male == case.is_male)
-            & (abs(controls.age_at_index - case.age_at_index) <= 2)
-        ]
-        if pool.empty:
-            pool = controls[
-                (~controls.exam_id.isin(used))
-                & (abs(controls.age_at_index - case.age_at_index) <= 3)
-            ]
-        if pool.empty:
-            continue
-        chosen = pool.iloc[int(rng.integers(len(pool)))]
-        used.add(chosen.exam_id)
-        pairs.append((case.exam_id, chosen.exam_id))
-    matched_ids = [a for a, _ in pairs] + [b for _, b in pairs]
-    return d[d.exam_id.isin(matched_ids)].reset_index(drop=True)
-
-
-def cv_auc(matched, features, n_repeats=10):
-    y = (matched["split"] == "vaka").astype(int).values
-    X = SimpleImputer().fit_transform(matched[features].values)
-    P = np.zeros((n_repeats, len(y)))
-    for t in range(n_repeats):
-        skf = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=t)
-        for tr, te in skf.split(X, y, groups=matched.patient_id.values):
-            m = make_pipeline(StandardScaler(), LogisticRegression(max_iter=2000))
-            m.fit(X[tr], y[tr])
-            P[t, te] = m.predict_proba(X[te])[:, 1]
-    return roc_auc_score(y, P.mean(0))
+import statsmodels.api as sm
+from sklearn.metrics import roc_auc_score, brier_score_loss
+from common import OUT, SEEDS, FINAL3, RRB, ATR, FIVE, load_pool, match_once, oof_pred, save_json
 
 
 def main():
-    d = build_dataset()
-    results = {"M0": [], "RR": [], "Atrial": [], "Final3": [], "H2": []}
-
-    for seed in SEEDS:
-        m = match_once(d, seed)
-        if seed == 42:
-            m.to_csv("cohort_clean.csv", index=False)  # for downstream scripts
-
-        auc_m0 = cv_auc(m, ["age_at_index", "is_male"])
-        auc_rr = cv_auc(m, RR)
-        auc_atrial = cv_auc(m, ATRIAL)
-        auc_final3 = cv_auc(m, FINAL3)
-
-        results["M0"].append(auc_m0)
-        results["RR"].append(auc_rr)
-        results["Atrial"].append(auc_atrial)
-        results["Final3"].append(auc_final3)
-        results["H2"].append(auc_final3 - auc_rr)
-
-        print(f"seed {seed:3d}: M0={auc_m0:.3f} RR={auc_rr:.3f} "
-              f"Atrial={auc_atrial:.3f} Final3={auc_final3:.3f} "
-              f"H2={auc_final3 - auc_rr:+.3f}")
-
-    print("\n=== 11-seed averages ===")
-    for k, v in results.items():
-        v = np.array(v)
-        print(f"  {k:8s} mean={v.mean():.3f} sd={v.std():.4f} "
-              f"range=[{v.min():.3f},{v.max():.3f}]")
-        if k == "H2":
-            print(f"           positive in {int((v > 0).sum())}/{len(v)} seeds")
+    pool = load_pool()
+    pool["dAge"] = pool.age_at_first_af - pool.age_at_index
+    print("pool:", pool.split.value_counts().to_dict())
+    rows, ops = [], []
+    incr = {"all": [], ">=2y": [], ">=3y": []}
+    for s in SEEDS:
+        m, pairs = match_once(pool, s)
+        if s == 42:
+            m.to_csv(OUT / "matched_seed42.csv", index=False)
+        r = {"seed": s, "pairs": len(pairs)}
+        for name, f in [("AgeSex", ["age_at_index", "is_male"]), ("RR", RRB), ("Atrial", ATR),
+                        ("Final3", FINAL3), ("Five", FIVE)]:
+            y, p = oof_pred(m, f)
+            r[name] = roc_auc_score(y, p)
+            if name == "Final3":
+                ops.append(dict(sens80=(p[y == 1] > np.quantile(p[y == 0], .8)).mean(),
+                                sens90=(p[y == 1] > np.quantile(p[y == 0], .9)).mean(),
+                                brier=brier_score_loss(y, p)))
+                if s == 42:
+                    lp = np.log(p / (1 - p)).reshape(-1, 1)
+                    cal = sm.Logit(y, sm.add_constant(lp)).fit(disp=0)
+                    seed42 = {"Final3": r[name], "brier": brier_score_loss(y, p),
+                              "cal_intercept": float(cal.params[0]), "cal_slope": float(cal.params[1])}
+        r["H2"] = r["Final3"] - r["RR"]
+        rows.append(r)
+        dd = dict(zip(m[m.split == "vaka"].exam_id, m[m.split == "vaka"].dAge))
+        for name, thr in [("all", 1), (">=2y", 2), (">=3y", 3)]:
+            keep = [(c, k) for c, k in pairs if dd[c] >= thr]
+            sub = m[m.exam_id.isin([x for pr in keep for x in pr])]
+            y, p1 = oof_pred(sub, FINAL3); _, p0 = oof_pred(sub, RRB)
+            incr[name].append((len(keep), roc_auc_score(y, p1) - roc_auc_score(y, p0)))
+        print({k: (round(v, 3) if isinstance(v, float) else v) for k, v in r.items()}, flush=True)
+    R = pd.DataFrame(rows); R.to_csv(OUT / "07_seed_results.csv", index=False)
+    O = pd.DataFrame(ops)
+    res = {k: [float(R[k].mean()), float(R[k].std())] for k in ["AgeSex", "RR", "Atrial", "Final3", "Five", "H2"]}
+    res["Final3_range"] = [float(R.Final3.min()), float(R.Final3.max())]
+    res["H2_positive_seeds"] = int((R.H2 > 0).sum())
+    res["sens80"] = [float(O.sens80.mean()), float(O.sens80.std())]
+    res["sens90"] = [float(O.sens90.mean()), float(O.sens90.std())]
+    res["brier"] = [float(O.brier.mean()), float(O.brier.std())]
+    res["seed42"] = seed42
+    res["table5_increment"] = {k: {"cases": v[0][0], "mean": float(np.mean([x[1] for x in v])),
+                                   "sd": float(np.std([x[1] for x in v])),
+                                   "positive": int(sum(x[1] > 0 for x in v))} for k, v in incr.items()}
+    save_json(res, "07_primary.json")
+    print(R[["AgeSex", "RR", "Atrial", "Final3", "Five", "H2"]].agg(["mean", "std"]).round(4))
 
 
 if __name__ == "__main__":
