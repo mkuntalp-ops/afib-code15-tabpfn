@@ -1,6 +1,6 @@
 """
-Revision 14 - Verification of the PR and heart-rate measurements (Methods II-G, Results III-S,
-Fig. 7): device-label AUROCs, inter-lead agreement, a second delineator (NeuroKit2 CWT, lead
+Revision 14 - Verification of the PR and heart-rate measurements (Methods III-G, Results IV-S,
+Fig. 8): device-label AUROCs, inter-lead agreement, a second delineator (NeuroKit2 CWT, lead
 II, aligned to each R peak) and the full analysis repeated with the CWT PR interval.
 
 Input : outputs/cohort_signals.npz, cohort_clean.csv, feature tables, data/exams.csv

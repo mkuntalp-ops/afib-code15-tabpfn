@@ -1,6 +1,6 @@
 """
 Stage 7 - Age/sex matching averaged over 11 realisations and the primary results
-(Methods II-B, II-J, II-K; Results III-D, III-I, III-L).
+(Methods III-B, III-J, III-K; Results IV-D, IV-I, IV-L).
 
 For each seed in config/seeds.txt: 1:1 matching (common.match_once), then out-of-fold
 AUROC for age+sex, the variability block, the atrial block, the final three-feature model

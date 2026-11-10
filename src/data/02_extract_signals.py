@@ -1,5 +1,5 @@
 """
-Stage 2 - Waveform extraction, zero-padding removal and signal QC (Methods II-D).
+Stage 2 - Waveform extraction, zero-padding removal and signal QC (Methods III-D).
 
 Extracts the cohort's exams either from the 18 CODE-15% HDF5 parts
 (data/exams_part*.hdf5) or, if those are absent, from pre-extracted per-part archives

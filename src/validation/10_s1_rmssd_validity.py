@@ -1,6 +1,6 @@
 """
-Stage 10 - Short-window RMSSD measurement validity (Methods 2.10, Results
-3.10, Table 7).
+Stage 10 - Short-window RMSSD measurement validity (Methods III-L, Results
+IV-Q, Table VIII).
 
 Uses the PAF Prediction Challenge Database (afpdb; PhysioNet/CinC 2001,
 open access, 128 Hz, 30-minute two-lead recordings) to test whether RMSSD

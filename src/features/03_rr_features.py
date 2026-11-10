@@ -1,5 +1,5 @@
 """
-Stage 3 - Beat-to-beat variability features from lead II (Methods II-D, II-E).
+Stage 3 - Beat-to-beat variability features from lead II (Methods III-D, III-E).
 
 All QC-passed records are written; the signal-quality rule (at least six detected R peaks,
 i.e. five RR intervals) is applied at the matching stage through n_R.

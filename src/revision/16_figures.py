@@ -1,8 +1,10 @@
 """
-Revision 16 - Manuscript figures 1-7 at printed size (3.4 or 6.8 in wide, fonts >= 7 pt).
+Revision 16 - Manuscript Figs. 2-8 at printed size (3.4 or 6.8 in wide, fonts >= 7 pt).
 
 Input : outputs/ (matched_seed42.csv, 09/14 outputs, cohort_signals.npz), data/ptbxl_cohort.csv
-Output: outputs/figures/Fig1-Fig7 (PNG, 600 dpi)
+Output: outputs/figures/Fig1-Fig7 (PNG, 600 dpi). The file names keep the numbering of the
+        previous manuscript version: file FigN is manuscript Fig. N+1. Manuscript Fig. 1 is
+        drawn by stage 18 (18_fig_acquisition_schematic.py).
 """
 import sys, json
 sys.path.insert(0, "src"); sys.path.insert(0, "src/features")
@@ -29,7 +31,7 @@ m42 = pd.read_csv(OUT / "matched_seed42.csv")
 ids_ = m42  # shorthand
 
 
-# ---------------- Figure 1: cohort flow ----------------
+# ---------------- Figure 2 (file Fig1): cohort flow ----------------
 def box(ax, x, y, w, h, text, fc="#ffffff", fs=6.2):
     p = FancyBboxPatch((x - w / 2, y - h / 2), w, h, boxstyle="round,pad=0.004,rounding_size=0.012",
                        linewidth=0.6, edgecolor="#333333", facecolor=fc)
@@ -79,7 +81,7 @@ arrow(ax, L, 0.162, L, 0.122)
 box(ax, L, 0.07, 0.47, 0.105, f"Sensitivity analyses: interval ≥2 y ({N_GE2Y} cases);\ncontrols with ≥2 ECGs, re-matched ({N_ECG2} pairs)", fs=FS)
 fig.savefig(f"{FIG}/Fig1_cohort_flow.png", dpi=DPI, bbox_inches="tight"); plt.close(fig)
 
-# ---------------- Figure 2: recorded interval, integer years ----------------
+# ---------------- Figure 3 (file Fig2): recorded interval, integer years ----------------
 d = (m42[m42.split == "vaka"].age_at_first_af - m42[m42.split == "vaka"].age_at_index).astype(int)
 cnt = d.value_counts().sort_index()
 fig, ax = plt.subplots(figsize=(3.5, 2.3))
@@ -100,7 +102,7 @@ for name, feats in [("Age + sex", ["age_at_index", "is_male"]), ("Variability", 
     y, p = oof_pred(m42, feats)
     pred[name] = (y, p)
 
-# ---------------- Figure 3: ROC ----------------
+# ---------------- Figure 4 (file Fig3): ROC ----------------
 fig, ax = plt.subplots(figsize=(3.5, 3.1))
 styles = ["-.", "--", ":", "-"]
 for (name, (y, p)), ls in zip(pred.items(), styles):
@@ -116,7 +118,7 @@ leg.get_frame().set_linewidth(0.4)
 fig.set_size_inches(3.5, 3.1)
 fig.tight_layout(); fig.savefig(f"{FIG}/Fig3_ROC.png", dpi=DPI); plt.close(fig)
 
-# ---------------- Figure 4: calibration ----------------
+# ---------------- Figure 5 (file Fig4): calibration ----------------
 y, p = pred["Three-feature model"]
 qs = pd.qcut(p, 8, labels=False, duplicates="drop")
 obs = pd.Series(y).groupby(qs).mean(); mp = pd.Series(p).groupby(qs).mean()
@@ -130,7 +132,7 @@ ax.set_xlim(0, 1); ax.set_ylim(0, 1)
 ax.text(0.03, 0.93, "Matched prevalence 50%:\nnot calibration to population incidence", fontsize=6.2, va="top")
 fig.tight_layout(); fig.savefig(f"{FIG}/Fig4_calibration.png", dpi=DPI); plt.close(fig)
 
-# ---------------- Figure 5: artefact adjudication by amplitude stratum ----------------
+# ---------------- Figure 6 (file Fig5): artefact adjudication by amplitude stratum ----------------
 med_amp = m42.Pamp_V1.median()
 strata = {"Low V1 P amplitude": m42[m42.Pamp_V1 <= med_amp], "High V1 P amplitude": m42[m42.Pamp_V1 > med_amp]}
 feats5 = [("Pdur_med", "P duration (ms)"), ("Pdisp", "P dispersion (ms)"), ("PR_med", "PR interval (ms)"),
@@ -152,7 +154,7 @@ for r, (sname, sdf) in enumerate(strata.items()):
             ax.set_ylabel(("V1 P amplitude ≤ " if r == 0 else "V1 P amplitude > ") + f"{med_amp:.3f} mV", fontsize=7.5)
 fig.tight_layout(); fig.savefig(f"{FIG}/Fig5_artefact.png", dpi=DPI); plt.close(fig)
 
-# ---------------- Figure 7: PR verification ----------------
+# ---------------- Figure 8 (file Fig7): PR verification ----------------
 b = pd.read_csv(OUT / "signal_bounds.csv").set_index("exam_id")
 ex_id = int(m42[(m42.split == "vaka") & (m42.PR_med.notna()) & (m42.Pamp_V1 > 0.1)].exam_id.iloc[0])
 _z = np.load(OUT / "cohort_signals.npz"); tr = _z["tracings"][list(_z["exam_id"]).index(ex_id)][None]
@@ -204,7 +206,7 @@ fig.tight_layout(); fig.savefig(f"{FIG}/Fig7_PR_verification.png", dpi=DPI); plt
 save_json({"fig5_pvalues": pvals, "fig7_example_exam": ex_id}, "16_figure_stats.json")
 print("figures written:", sorted(__import__("os").listdir(FIG)))
 
-# ---------------- Figure 6: derivation vs PTB-XL replication (new features) ----------------
+# ---------------- Figure 7 (file Fig6): derivation vs PTB-XL replication (new features) ----------------
 px = pd.read_csv(OUT / "ptbxl_features.csv").merge(
     pd.read_csv(DATA / "ptbxl_cohort.csv")[["ecg_id", "split"]], on="ecg_id")
 px = px[px.n_R >= 6]

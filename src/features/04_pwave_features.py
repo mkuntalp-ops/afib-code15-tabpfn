@@ -1,5 +1,5 @@
 """
-Stage 4 - Atrial conduction and depolarisation features, 12 leads (Methods II-E, II-F).
+Stage 4 - Atrial conduction and depolarisation features, 12 leads (Methods III-E, III-F).
 
 Input : outputs/cohort_signals.npz, outputs/cohort_clean.csv
 Output: outputs/pwave_features.csv (per-lead PR_k, Pamp_k, Pdur_k and record-level PR_med,

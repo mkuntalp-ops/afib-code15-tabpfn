@@ -1,5 +1,5 @@
 """
-Stage 1 - Cohort construction (Methods II-B, Fig. 1).
+Stage 1 - Cohort construction (Methods III-B, Fig. 2).
 
 Reproduces the cohort used in the manuscript exactly (no age filter):
   cases   : patients with >=1 AF-labelled exam and, at a lower recorded age, >=1 exam with

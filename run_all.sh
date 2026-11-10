@@ -26,4 +26,5 @@ run src/revision/14_pr_verification.py
 run src/revision/15_tables_and_reduction.py
 run src/revision/16_figures.py
 run src/revision/17_final_model.py
+run src/revision/18_fig_acquisition_schematic.py
 echo; echo "All stages finished; results in outputs/."

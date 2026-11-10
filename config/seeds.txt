@@ -1,7 +1,7 @@
 # Matching realisation seeds averaged over for all seed-averaged estimates
-# reported in the manuscript (Methods 2.9). Seed 42 is the realisation
-# retained for single-realisation displays (Table 2, Table 3, Table 5,
-# Figures 3, 4, 6), since it was the seed fixed a priori before any results
+# reported in the manuscript (Methods III-K). Seed 42 is the realisation
+# retained for single-realisation tables and figures (e.g.
+# Figs. 4, 5, 7), since it was the seed fixed a priori before any results
 # were seen when the cohort was first constructed.
 42
 0

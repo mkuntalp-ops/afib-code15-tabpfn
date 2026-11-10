@@ -2,7 +2,7 @@
 Revision 15 - Table III (feature distributions), Table VI (coefficients), artefact
 adjudication statistics, Stage-1 correlations, the effect of outcome-informed decisions
 (nested Stage 2, model without V1 measure) and the unmatched-cohort analysis
-(Results III-C, III-E, III-H, III-K, III-M; Tables I, III, VI).
+(Results IV-C, IV-E, IV-H, IV-K, IV-M; Tables I, III, VI).
 
 Input : outputs/matched_seed42.csv and feature tables
 Output: outputs/15_tables_reduction.json

@@ -1,4 +1,4 @@
-"""Per-record feature extraction shared by stages 3-5 (Methods II-D, II-E).
+"""Per-record feature extraction shared by stages 3-5 (Methods III-D, III-E).
 
 Filtering: 0.5-40 Hz third-order Butterworth band-pass, zero-phase (filtfilt), applied to
 the zero-padding-free segment. R peaks: NeuroKit2 ecg_peaks. Delineation: NeuroKit2

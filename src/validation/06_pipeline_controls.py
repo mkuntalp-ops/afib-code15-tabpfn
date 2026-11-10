@@ -1,5 +1,5 @@
 """
-Stage 6 - Pipeline checks: positive and negative controls (Methods II-H, Results III-O).
+Stage 6 - Pipeline checks: positive and negative controls (Methods III-H, Results IV-O).
 
 Positive control: AF-labelled records (sentinel_af) vs sinus-rhythm records (cases and
 controls), RR features only. Tests that the pipeline detects a signal that must be present.

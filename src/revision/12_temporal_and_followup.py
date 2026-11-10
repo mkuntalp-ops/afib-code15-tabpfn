@@ -1,7 +1,7 @@
 """
 Revision 12 - Temporal resolution of the age-based ordering, discrimination by recorded
 interval, follow-up and ECG-contact asymmetry, and the controls-with->=2-ECGs sensitivity
-analysis (Methods II-C, II-J; Results III-B, III-F, III-G).
+analysis (Methods III-C, III-J; Results IV-B, IV-F, IV-G).
 
 Recorded ages a_i < a_af are whole years. With true age t = a + u, u ~ U(0,1) (truncation) or
 U(-0.5,0.5) (rounding), the true interval is T = (a_af - a_i) + (u_af - u_i), which is always

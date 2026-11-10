@@ -1,6 +1,6 @@
 """
 Revision 13 - Approximate ectopy quantification and RMSSD without ectopic intervals
-(Methods II-I, Results III-O). Premature beat: RR_k < 0.80 x median of up to four
+(Methods III-I, Results IV-O). Premature beat: RR_k < 0.80 x median of up to four
 neighbouring RR values, followed by RR_{k+1} > 1.10 x that median (short-long pattern).
 
 Input : outputs/cohort_signals.npz, cohort_clean.csv, matched_seed42.csv, feature tables

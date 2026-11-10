@@ -1,5 +1,5 @@
 """
-Stage 0 - G0 feasibility check (Methods 2.2).
+Stage 0 - G0 feasibility check (Methods III-B).
 
 Confirms, before building the full cohort, that patient_id linkage in
 CODE-15% recovers enough patients with both an AF-labelled record and an

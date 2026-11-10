@@ -1,5 +1,5 @@
 """
-Stage 11 - Discrimination by age and age-by-feature interaction (Results III-N).
+Stage 11 - Discrimination by age and age-by-feature interaction (Results IV-N).
 
 Input : outputs/matched_seed42.csv
 Output: outputs/11_age.json

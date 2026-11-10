@@ -1,5 +1,5 @@
 """
-Stage 9 - PTB-XL cross-sectional replication (Methods II-M, Results III-R, Fig. 6).
+Stage 9 - PTB-XL cross-sectional external evaluation (Methods III-M, Results IV-R, Fig. 7).
 
 Cohort file data/ptbxl_cohort.csv: ecg_id, patient_id, age, sex, file, af_oncesi, gun, split
 (135 AF/atrial-flutter cases with an available sinus record, 540 age/sex-matched controls).

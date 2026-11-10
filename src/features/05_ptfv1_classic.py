@@ -1,5 +1,5 @@
 """
-Stage 5 - Classic P-terminal force in V1 (Morris index; Methods II-E, Table III).
+Stage 5 - Classic P-terminal force in V1 (Morris index; Methods III-E, Table III).
 
 Input : outputs/cohort_signals.npz, outputs/cohort_clean.csv
 Output: outputs/ptfv1_true.csv

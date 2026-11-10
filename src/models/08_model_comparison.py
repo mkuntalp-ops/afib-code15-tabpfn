@@ -1,6 +1,6 @@
 """
-Stage 8 - Seven model classes on the five-feature set, seed-42 matched cohort (Methods II-J,
-Table IV, Results III-D, III-J).
+Stage 8 - Seven model classes on the five-feature set, seed-42 matched cohort (Methods III-J,
+Table IV, Results IV-D, IV-J).
 
 Logistic regression, SVM, kNN and random forest at library defaults; gradient boosting and
 the multilayer perceptron tuned by inner 3-fold grid search. TabPFN (optional) runs without
