@@ -2,7 +2,9 @@
 
 Analysis code for the manuscript:
 
-> **How much atrial fibrillation risk is measurable on routine sinus-rhythm ECG? A case-control analysis with age-ordered index recordings and patient-level cross-validation** (revised version, JBHI major revision)
+> **How much atrial fibrillation risk is measurable on routine sinus-rhythm ECG? A case-control analysis with age-ordered index recordings and patient-level cross-validation**
+>
+> Accepted for publication in *IEEE Journal of Biomedical and Health Informatics* (in press).
 
 The numbers, tables and figures of the revised manuscript are produced by the scripts in `src/`, run in the order given in `run_all.sh`. Two exceptions: the explanation times in Table VII (TreeSHAP, KernelSHAP) are carried over from the original analysis, and all timings depend on the machine.
 
@@ -79,5 +81,9 @@ Claude Code (Anthropic) assisted with drafting and refactoring the analysis scri
 ## Citation
 
 ```text
-[Add full manuscript citation and DOI after publication]
+M. Kuntalp, "How much atrial fibrillation risk is measurable on routine sinus-rhythm ECG? A case-control
+analysis with age-ordered index recordings and patient-level cross-validation," IEEE Journal of Biomedical and
+Health Informatics, accepted for publication, 2026, doi: [to be added when assigned].
 ```
+
+Code archive for the accepted version: release `jbhi-accepted`, Zenodo DOI [to be added].
