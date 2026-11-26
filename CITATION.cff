@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the article below (preferred-citation) and, for the code itself, this archive."
+type: software
+title: "How much AF risk is measurable on routine sinus-rhythm ECG? Analysis code"
+abstract: "Analysis code for a case-control study of atrial fibrillation risk on routine sinus-rhythm ECG (CODE-15%), with external evaluation on PTB-XL and a short-window RMSSD substudy (PAF Prediction Challenge Database). The datasets are not redistributed."
+authors:
+  - family-names: Kuntalp
+    given-names: Mehmet
+    affiliation: "Department of Electrical and Electronics Engineering, Dokuz Eylül University, İzmir, Turkey"
+    orcid: "https://orcid.org/0000-0002-3381-9026"
+    email: mehmet.kuntalp@deu.edu.tr
+license: MIT
+repository-code: "https://github.com/mkuntalp-ops/afib-code15-tabpfn"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24550944
+    description: "Zenodo concept DOI (all versions)"
+  - type: doi
+    value: 10.5281/zenodo.24550945
+    description: "Zenodo DOI of release jbhi-accepted"
+keywords:
+  - atrial fibrillation
+  - electrocardiography
+  - sinus rhythm
+  - risk prediction
+  - CODE-15%
+  - TabPFN
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Kuntalp
+      given-names: Mehmet
+      affiliation: "Department of Electrical and Electronics Engineering, Dokuz Eylül University, İzmir, Turkey"
+      orcid: "https://orcid.org/0000-0002-3381-9026"
+  title: "How much atrial fibrillation risk is measurable on routine sinus-rhythm ECG? A case-control analysis with age-ordered index recordings and patient-level cross-validation"
+  journal: "IEEE Journal of Biomedical and Health Informatics"
+  year: 2026
+  status: in-press
