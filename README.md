@@ -86,4 +86,4 @@ analysis with age-ordered index recordings and patient-level cross-validation," 
 Health Informatics, accepted for publication, 2026, doi: [to be added when assigned].
 ```
 
-Code archive for the accepted version: release `jbhi-accepted`, Zenodo DOI [to be added].
+Code archive for the accepted version: release `jbhi-accepted`, Zenodo [doi:10.5281/zenodo.24550945](https://doi.org/10.5281/zenodo.24550945) (all versions: [doi:10.5281/zenodo.24550944](https://doi.org/10.5281/zenodo.24550944)).
